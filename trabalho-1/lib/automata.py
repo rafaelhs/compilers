@@ -17,7 +17,7 @@ class Automata():
         return self.automata[current_state][char]
 
     def is_final(self, state):
-        if state in range(1, 29):
+        if state in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]:
             return True
         else:
             return False
