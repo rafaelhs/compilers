@@ -13,16 +13,48 @@ def hash_function(key: str, mod: int):
 
 #f_in = open("in.txt", "r")
 
-at = Automata()
+at = Automata(13)
 
 for i in range(ord('a'), ord('z')+1):
-    at.put(0, i, 28)
-    at.put(28, i, 28)
+    at.put(0, i, 1)
+    at.put(1, i, 1)
+
+for i in range(ord('A'), ord('Z')+1):
+    at.put(0, i, 1)
+    at.put(1, i, 1)
 
 for i in range(0, 10):
-    at.put(28, i, 28)
+    at.put(1, i, 1)
+    at.put(0, i, 3)
+    at.put(2, i, 3)
+    at.put(4, i, 4)
 
-at.put(28, ord('_'), 28)
+at.put(0, ord('-'), 2)
+at.put(0, ord('+'), 2)
+
+at.put(0, ord(')'), 5)
+at.put(0, ord('_'), 5)
+at.put(0, ord('\''), 5)
+at.put(0, ord('}'), 5)
+at.put(0, ord('{'), 5)
+at.put(0, ord(']'), 5)
+at.put(0, ord('['), 5)
+at.put(0, ord('='), 5)
+at.put(0, ord(';'), 5)
+
+at.put(0, ord(':'), 6)
+at.put(0, ord('('), 7)
+at.put(0, ord('*'), 8)
+at.put(0, ord('<'), 9)
+at.put(0, ord('>'), 10)
+at.put(0, ord('.'), 11)
+
+at.put(11, ord('.'), 12)
+at.put(10, ord('='), 12)
+at.put(9, ord('='), 12)
+at.put(8, ord(')'), 12)
+at.put(7, ord('*'), 12)
+at.put(6, ord('='), 12)
 
 
 f_out = open("out.txt", "w")

@@ -1,12 +1,12 @@
 
 class Automata():
 
-    def __init__(self):
+    def __init__(self, states):
 
         self.automata = []
-        for i in range(29):
+        for _ in range(states+1):
             col = []
-            for j in range(255):
+            for _ in range(255):
                 col.append(None)
             self.automata.append(col)
 
@@ -23,13 +23,13 @@ class Automata():
             return False
 
     def get_state(self, state):
-        if state in [1, 2, 3]:
+        if state in [4, 3]:
             return 'NUMBER'
-        elif state in [28]:
+        elif state in [1]:
             return 'IDENTIFIER'
-        elif state in range(4, 21):
-            return 'SIMPLE_IDENTIFIER'
-        elif state in range(21, 27):
-            return 'COMPOSITE_IDENTIFIER'
+        elif state in [2, 5, 6, 7, 8, 9, 10, 11]:
+            return 'SYMBOL'
+        elif state in [12]:
+            return 'COMPOSITE_SYMBOL'
         else:
             return 'ERROR'
