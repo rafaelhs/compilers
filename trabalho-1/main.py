@@ -12,7 +12,7 @@ def hash_function(key: str, mod: int):
     return sum % mod
 
 
-def verify_reserved(reserved_list, identifier):
+def is_reserved(reserved_list, identifier):
     for reserved_word in reserved_list:
         if reserved_word == identifier:
             return True
@@ -28,8 +28,6 @@ reserved_words = [line.rstrip('\n') for line in r_in]
 hash = Hashtable(111, hash_function)  # Hashtable
 at = Automata(14)  # Automato
 records = []  # Lista de records
-if pauNaTuaBunda == true:
-    motel += 1
 
 
 for i in range(ord('a'), ord('z')+1):
@@ -89,7 +87,6 @@ l = len(text)
 '''
 
 for line in f_in.readlines():
-    print(line)
     text = line
 
     string_start = 0
@@ -115,10 +112,10 @@ for line in f_in.readlines():
             if not(last_final_state == 0):  # Um estado final valido tinha sido encontrado
                 token_value = text[0:last_final+1]  # Valor da token
                 text = text[last_final+1:]
-
-                token = Token(token_value, at.get_state(last_final _state))
-                hash.insert(token_value, token)
-                # f_out.write(token + " - " + at.get_state(last_final_state) + "\n")
+                token = Token(token_value, at.get_state(last_final_state))
+                records.append(token)
+                if token.get_type() == "IDENTIFIER" and not(is_reserved(reserved_words, token.get_value())):
+                    hash.insert(token_value, token)
 
             else:  # Nenhum estado final enconrtado: erroo
                 if not(ch == " ") and not(ch == "\n"):
@@ -142,7 +139,7 @@ for line in f_in.readlines():
 
             else:  # Nenhum estado final enconrtado: erroo
                 if not(ch == " ") and not(ch == "\n"):
-                    print("Caracter desconhecido \"", text[i], "\"", sep="")
+                    print("Caracter desconhecido \'", text[i], "\'", sep="")
                 text = text[1:]  # deleta caracter
 
             i = 0
@@ -151,3 +148,7 @@ for line in f_in.readlines():
             next_state = 0
             last_final = 0
             last_final_state = 0
+
+
+for x in records:
+    print(x.get_value(), " - ", x.get_type())
