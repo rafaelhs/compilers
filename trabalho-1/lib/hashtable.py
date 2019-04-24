@@ -18,14 +18,24 @@ class Hashtable:
 
         # Se a lista nao existir, inicia uma lista vazia
         lst = self.__table[hash_function(key, max)]
-        if lst == None:
+        if lst == None:  # Lista vasia, apenas faz o append
             lst = []
+            lst.append(node)
+            self.__size += 1
+        else:  # Lista nao vazia, verifica se a chave ja existe
+            for n in lst:
+                if n.get_key() == key:  # Se existe, substitui
+                    print("!", key)
+                    n = node
+                    break
+            else:  # Senao, faz o append normalmente
+                lst.append(node)
+                self.__size += 1
 
-        lst.append(node)
         self.__table[hash_function(key, max)] = lst
-        self.__size += 1
 
     # Retorna o item com a chave dada, retorna None se nao encontrar
+
     def get(self, key):
         max = self.__max
         hash_function = self.__hash_function
@@ -41,6 +51,16 @@ class Hashtable:
                 return n.get_item()
 
         return None
+
+    def get_pos(self):
+        r = []
+        for idx, lst in enumerate(self.__table):
+            if not(lst == None) and not(lst == []):
+                l = []
+                for n in lst:
+                    l.append((n.get_key(), n.get_item()))
+                r.append((idx, l))
+        return r
 
     def get_max(self):
         return self.__max

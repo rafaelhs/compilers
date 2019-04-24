@@ -7,7 +7,8 @@ def hash_function(key: str, mod: int):
     x = 1
     sum = 0
     for char in key:
-        sum += ord(char) * x
+        sum *= x
+        sum += ord(char)
         x += 1
     return sum % mod
 
@@ -19,13 +20,14 @@ def is_reserved(reserved_list, identifier):
     return False
 
 
+# Arquivo com a lista de palavras reservadas
 r_in = open("reserved_words.txt", "r")
-f_out = open("out.txt", "w")
+f_out = open("out.txt", "w")  # Arquivo com
 f_in = open("in.txt", "r")
 reserved_words = [line.rstrip('\n') for line in r_in]
 
 
-hash = Hashtable(111, hash_function)  # Hashtable
+hash = Hashtable(97, hash_function)  # Hashtable
 at = Automata(14)  # Automato
 records = []  # Lista de records
 
@@ -131,11 +133,12 @@ for line in f_in.readlines():
 
         if i >= l:
             if not(last_final_state == 0):  # Um estado final valido tinha sido encontrado
-
-                token = text[0:last_final+1]
+                token_value = text[0:last_final+1]  # Valor da token
                 text = text[last_final+1:]
-                f_out.write(token + " - " +
-                            at.get_state(last_final_state) + "\n")
+                token = Token(token_value, at.get_state(last_final_state))
+                records.append(token)
+                if token.get_type() == "IDENTIFIER" and not(is_reserved(reserved_words, token.get_value())):
+                    hash.insert(token_value, token)
 
             else:  # Nenhum estado final enconrtado: erroo
                 if not(ch == " ") and not(ch == "\n"):
@@ -152,3 +155,10 @@ for line in f_in.readlines():
 
 for x in records:
     print(x.get_value(), " - ", x.get_type())
+
+
+for l in hash.get_pos():
+    print("Position:", l[0])
+    for tk in l[1]:
+        print(tk[1].get_value(), tk[1].get_type(), sep=" - ")
+    print("\n")
