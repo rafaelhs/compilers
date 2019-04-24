@@ -25,7 +25,6 @@ class Hashtable:
         else:  # Lista nao vazia, verifica se a chave ja existe
             for n in lst:
                 if n.get_key() == key:  # Se existe, substitui
-                    print("!", key)
                     n = node
                     break
             else:  # Senao, faz o append normalmente

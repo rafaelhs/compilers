@@ -88,7 +88,13 @@ i = 0
 l = len(text)
 '''
 
+
+row_count = 0
+col_count = 0
+
 for line in f_in.readlines():
+    col_count = 0
+    row_count += 1
     text = line
 
     string_start = 0
@@ -121,9 +127,11 @@ for line in f_in.readlines():
 
             else:  # Nenhum estado final enconrtado: erroo
                 if not(ch == " ") and not(ch == "\n"):
+                    print("Linha: ", row_count, " Coluna: ", col_count+1, sep="")
                     print("Caracter desconhecido \"", text[i], "\"", sep="")
                 text = text[1:]  # deleta caracter
 
+            col_count += i
             i = 0
             l = len(text)
             current_state = 0
@@ -143,8 +151,10 @@ for line in f_in.readlines():
             else:  # Nenhum estado final enconrtado: erroo
                 if not(ch == " ") and not(ch == "\n"):
                     print("Caracter desconhecido \'", text[i], "\'", sep="")
+
                 text = text[1:]  # deleta caracter
 
+            col_count += i
             i = 0
             l = len(text)
             current_state = 0
@@ -153,10 +163,14 @@ for line in f_in.readlines():
             last_final_state = 0
 
 
+print("\n---------------------------------")
+print("\nLista de records: \n")
 for x in records:
     print(x.get_value(), " - ", x.get_type())
 
 
+print("\n---------------------------------")
+print("\Tabela hash: \n")
 for l in hash.get_pos():
     print("Position:", l[0])
     for tk in l[1]:
