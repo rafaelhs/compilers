@@ -4,7 +4,7 @@ class Hashtable:
     __size = None  # Quantos itens estao atualmente na tabela
     __table = None  # Tabela com a lista de itens
 
-    def __init__(self, max, hash_function):
+    def __init__(self, max):
         self.__max = max
         self.__hash_function = hash_function
         self.__size = 0
@@ -88,3 +88,13 @@ class Node:
 
     def get_key(self):
         return self.__key
+
+
+#Funcao de espalhamento
+def hash_function(key: str, mod: int):
+    x = 10
+    sum = 0
+    for char in key:
+        sum *= x
+        sum += ord(char)
+    return sum % mod

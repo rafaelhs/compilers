@@ -1,1 +1,1 @@
-text, current_state
+i

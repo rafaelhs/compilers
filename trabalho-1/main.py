@@ -3,14 +3,7 @@ from lib.automata import Automata
 from lib.token import Token
 
 
-def hash_function(key: str, mod: int):
-    x = 1
-    sum = 0
-    for char in key:
-        sum *= x
-        sum += ord(char)
-        x += 1
-    return sum % mod
+
 
 
 def is_reserved(reserved_list, identifier):
@@ -20,14 +13,14 @@ def is_reserved(reserved_list, identifier):
     return False
 
 
-# Arquivo com a lista de palavras reservadas
-r_in = open("reserved_words.txt", "r")
-f_out = open("out.txt", "w")  # Arquivo com
+r_in = open("reserved_words.txt", "r") # Arquivo com a lista de palavras reservadas
+records_out = open("records.txt", "w")  # Arquivo com a lista de records
+hash_out = open("hashtable.txt", "w")  # Arquivo com a hashtable de identificadores
 f_in = open("in.txt", "r")
 reserved_words = [line.rstrip('\n') for line in r_in]
 
 
-hash = Hashtable(97, hash_function)  # Hashtable
+hash = Hashtable(97)  # Hashtable
 at = Automata(14)  # Automato
 records = []  # Lista de records
 
@@ -75,19 +68,6 @@ at.put(8, ord(')'), 12)
 at.put(7, ord('*'), 12)
 at.put(6, ord('='), 12)
 
-'''
-text = f_in.read()
-
-string_start = 0
-current_state = 0
-next_state = 0
-last_final = 0
-last_final_state = 0
-
-i = 0
-l = len(text)
-'''
-
 
 row_count = 0
 col_count = 0
@@ -119,18 +99,23 @@ for line in f_in.readlines():
         else:  # movimento nao valido
             if not(last_final_state == 0):  # Um estado final valido tinha sido encontrado
                 token_value = text[0:last_final+1]  # Valor da token
-                text = text[last_final+1:]
-                token = Token(token_value, at.get_state(last_final_state))
-                records.append(token)
-                if token.get_type() == "IDENTIFIER" and not(is_reserved(reserved_words, token.get_value())):
+                text = text[last_final+1:]  # Retirando o valor do texto
+                token_type = at.get_state(last_final_state)
+                if token_type == "IDENTIFIER":  # Se for um identificador, verifica se e palavra reservada
+                    # Verificando se e palavra reservada
+                    if(is_reserved(reserved_words, token_value.lower())):
+                        token_type = "RESERVED_WORD"  # Mudando tipo da token para palavra reservada
+                token = Token(token_value, token_type)
+                records.append(token)  # Adicionando token na lista de records
+                if token.get_type() == "IDENTIFIER":  # Se for identificador, insere na hash
                     hash.insert(token_value, token)
 
-            else:  # Nenhum estado final enconrtado: erroo
-                if not(ch == " ") and not(ch == "\n"):
+            else:  # Nenhum estado final enconrtado: erro
+                if not(ch == " ") and not(ch == "\n"):  # Ignora espacos vazios e quebras de linha
                     print("Linha: ", row_count, " Coluna: ", col_count+1, sep="")
                     print("Caracter desconhecido \"", text[i], "\"", sep="")
                 text = text[1:]  # deleta caracter
-
+                i += 1
             col_count += i
             i = 0
             l = len(text)
@@ -142,10 +127,15 @@ for line in f_in.readlines():
         if i >= l:
             if not(last_final_state == 0):  # Um estado final valido tinha sido encontrado
                 token_value = text[0:last_final+1]  # Valor da token
-                text = text[last_final+1:]
-                token = Token(token_value, at.get_state(last_final_state))
-                records.append(token)
-                if token.get_type() == "IDENTIFIER" and not(is_reserved(reserved_words, token.get_value())):
+                text = text[last_final+1:]  # Retirando o valor do texto
+                token_type = at.get_state(last_final_state)
+                if token_type == "IDENTIFIER":  # Se for um identificador, verifica se e palavra reservada
+                    # Verificando se e palavra reservada
+                    if(is_reserved(reserved_words, token_value.lower())):
+                        token_type = "RESERVED_WORD"  # Mudando tipo da token para palavra reservada
+                token = Token(token_value, token_type)
+                records.append(token)  # Adicionando token na lista de records
+                if token.get_type() == "IDENTIFIER":  # Se for identificador, insere na hash
                     hash.insert(token_value, token)
 
             else:  # Nenhum estado final enconrtado: erroo
@@ -166,13 +156,26 @@ for line in f_in.readlines():
 print("\n---------------------------------")
 print("\nLista de records: \n")
 for x in records:
-    print(x.get_value(), " - ", x.get_type())
+    write_str = x.get_value() + " - " + x.get_type()
+    print(write_str)
+    records_out.write(write_str + '\n')
 
 
 print("\n---------------------------------")
-print("\Tabela hash: \n")
+print("\nTabela hash: \n")
 for l in hash.get_pos():
-    print("Position:", l[0])
+    write_str = "Position: " + str(l[0]) + " "
+    print(write_str)
+    hash_out.write(write_str + "\n")
+
     for tk in l[1]:
-        print(tk[1].get_value(), tk[1].get_type(), sep=" - ")
+        write_str = tk[1].get_value() + " - " + tk[1].get_type()
+        print(write_str)
+        hash_out.write(write_str + "\n")
+
     print("\n")
+    hash_out.write("\n")
+
+
+'''records_out = open("records.txt", "w")  # Arquivo com a lista de records
+hash_out = open("hashtable.txt", "w")  # Arquivo com a hashtable de identificadores'''
