@@ -24,7 +24,7 @@ hash = Hashtable(97)  # Hashtable
 at = Automata(14)  # Automato
 records = []  # Lista de records
 
-
+#Iniciando as tansicoes do automato
 for i in range(ord('a'), ord('z')+1):
     at.put(0, i, 1)
     at.put(1, i, 1)
@@ -70,10 +70,14 @@ at.put(7, ord('*'), 12)
 at.put(6, ord('='), 12)
 
 
+#Analise lexica
 row_count = 0
 col_count = 0
-
+error_flag = False
 for line in f_in.readlines():
+    if error_flag:
+        break
+
     col_count = 0
     row_count += 1
     text = line
@@ -88,6 +92,9 @@ for line in f_in.readlines():
     l = len(text)
 
     while l > 0:
+        if error_flag:
+            break
+
         ch = text[i]
         # Verificando o proximo estado
         next_state = at.get(current_state, ord(ch))
@@ -115,6 +122,7 @@ for line in f_in.readlines():
                 if not(ch == " ") and not(ch == "\n"):  # Ignora espacos vazios e quebras de linha
                     print("Linha: ", row_count, " Coluna: ", col_count+1, sep="")
                     print("Caracter desconhecido \"", text[i], "\"", sep="")
+                    error_flag = True
                 text = text[1:]  # deleta caracter
                 i += 1
             col_count += i
@@ -141,8 +149,9 @@ for line in f_in.readlines():
 
             else:  # Nenhum estado final enconrtado: erroo
                 if not(ch == " ") and not(ch == "\n"):
-                    print("Caracter desconhecido \'", text[i], "\'", sep="")
-
+                    print("Linha: ", row_count, " Coluna: ", col_count+1, sep="")
+                    print("Caracter desconhecido \"", text[i], "\"", sep="")
+                    error_flag = True
                 text = text[1:]  # deleta caracter
 
             col_count += i
@@ -154,29 +163,27 @@ for line in f_in.readlines():
             last_final_state = 0
 
 
-print("\n---------------------------------")
-print("\nLista de records: \n")
-for x in records:
-    write_str = x.get_value() + " - " + x.get_type()
-    print(write_str)
-    records_out.write(write_str + '\n')
+if not(error_flag):
+    print("\n---------------------------------")
+    print("\nLista de records: \n")
+    for x in records:
+        write_str = x.get_value() + " - " + x.get_type()
+        print(write_str)
+        records_out.write(write_str + '\n')
 
 
-print("\n---------------------------------")
-print("\nTabela hash: \n")
-for l in hash.get_pos():
-    write_str = "Position: " + str(l[0]) + " "
-    print(write_str)
-    hash_out.write(write_str + "\n")
-
-    for tk in l[1]:
-        write_str = tk[1].get_value() + " - " + tk[1].get_type()
+    print("\n---------------------------------")
+    print("\nTabela hash: \n")
+    for l in hash.get_pos():
+        write_str = "Position: " + str(l[0]) + " "
         print(write_str)
         hash_out.write(write_str + "\n")
 
-    print("\n")
-    hash_out.write("\n")
+        for tk in l[1]:
+            write_str = tk[1].get_value() + " - " + tk[1].get_type()
+            print(write_str)
+            hash_out.write(write_str + "\n")
 
+        print("\n")
+        hash_out.write("\n")
 
-'''records_out = open("records.txt", "w")  # Arquivo com a lista de records
-hash_out = open("hashtable.txt", "w")  # Arquivo com a hashtable de identificadores'''
