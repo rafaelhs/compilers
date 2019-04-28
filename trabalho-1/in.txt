@@ -1,4 +1,4 @@
-function @ matheus(variavel)  {}@
+function  matheus(variavel)  {}@
 var = var + 1
 if(var > 5){ @
     kkkkk
