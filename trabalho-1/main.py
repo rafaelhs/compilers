@@ -37,6 +37,7 @@ for i in range(ord('0'), ord("9")+1):
     at.put(1, i, 1)
     at.put(0, i, 3)
     at.put(2, i, 3)
+    at.put(3, i, 3)
     at.put(13, i, 4)
     at.put(4, i, 4)
 
