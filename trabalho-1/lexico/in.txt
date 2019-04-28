@@ -1,6 +1,4 @@
-function  matheus(variavel)  {}
-var = var + 1
-if(var > 5){ 
-    kkkkk
-}
-and div ConSt case UEL
+program Hello;
+begin
+  writeln ('Hello, world.');
+end.
