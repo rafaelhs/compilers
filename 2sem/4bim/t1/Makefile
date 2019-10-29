@@ -1,2 +1,23 @@
-regalloc.o:
-	g++ regalloc.cpp -o regalloc -g
+CC := g++
+CFLAGS := -lm -std=c++11
+FONTES := $(wildcard *.cpp)
+OBJS := $(FONTES:.c=.o)
+EXEC := regalloc
+VALGRIND := valgrind #--leak-check=full #--show-leak-kinds=all
+
+all: $(EXEC)
+
+$(EXEC): $(OBJS)
+	$(CC) -o $@ $(OBJS) $(CFLAGS)
+
+%.o: %.c
+	$(CC) -c $< $(CFLAGS)
+
+clean:
+	@rm -rf *.o $(EXEC)
+
+run:$(EXEC)
+	./$(EXEC)
+
+runv: $(EXEC)
+	$(VALGRIND) ./$(EXEC) 

@@ -9,8 +9,8 @@ class Node {
     public:
         int id;
         int color;
-        vector<int> interf;
-        vector<int> ogInterf;
+        std::vector<int> interf;
+        std::vector<int> ogInterf;
 
         Node(int pId) {
             id = pId;
@@ -36,14 +36,15 @@ class Node {
 };
 
 
-vector<Node> IN_LIST, STACK, CURRENT_GRAPH; //Grafo de entrada, pilha, grafo atual
-vector<int> CURRENT_NODES;   //Nos no grafo atual
+std::vector<Node> IN_LIST, STACK, CURRENT_GRAPH; //Grafo de entrada, pilha, grafo atual
+std::vector<int> CURRENT_NODES;   //Nos no grafo atual
 int K, CURRENT_K, FILEEND = 0; //Registradores fisicos, valor atual de K
-string G_NAME;  //Nome do grafo
+std::string G_NAME;  //Nome do grafo
 
 
 
-int getNode(vector<Node> l, int id) {
+int getNode(std::vector<Node> l, int id) {
+
     int i = 0, size = l.size();
     for(i; i < size; i++) {
         if(l[i].id == id) {
@@ -53,7 +54,7 @@ int getNode(vector<Node> l, int id) {
     return -1;
 };
 
-string readInput() {
+std::string readInput() {
     char c;
     std::string str;
     int n = 0;
@@ -68,12 +69,12 @@ string readInput() {
     return str;
 }
 
-vector<string> split(string str) {
-    vector<string> tokens;
+std::vector<std::string> split(std::string str) {
+    std::vector<std::string> tokens;
     std::string delimiter = " ";
 
     size_t pos = 0;
-    string token;
+    std::string token;
     while ((pos = str.find(delimiter)) != std::string::npos) {
         token = str.substr(0, pos);
         tokens.push_back(token);
@@ -107,8 +108,8 @@ void treatInput() {
     G_NAME = split(readInput())[1];
     G_NAME = G_NAME.substr(0, G_NAME.length()-1);
     K = stoi(readInput().substr(2));
-    string line;
-    vector<string> lineVector;
+    std::string line;
+    std::vector<std::string> lineVector;
     Node gNode;
     int i;
 
@@ -132,13 +133,13 @@ void treatInput() {
 
 
 void push(int ix) {
-    int i, j;
+    int i, j, k, l;
     Node n = CURRENT_GRAPH[ix];
     STACK.push_back(n);
     CURRENT_GRAPH.erase(CURRENT_GRAPH.begin() + ix);
     
 
-
+/*
     for(i = 0; i < n.interf.size(); i++) {
         if(n.interf[i] > K-1) {
             int ix2 = getNode(CURRENT_GRAPH, n.interf[i]);
@@ -149,6 +150,25 @@ void push(int ix) {
                 }
             }
         }
+    }*/
+    l = 0;
+    for(i = 0; i < CURRENT_GRAPH.size(); i++) {
+        /*if(l >= n.interf.size()){
+            return;
+        }*/
+        for(j = 0; j < n.interf.size(); j++) {
+            if(n.interf[j] > K-1){
+                if(CURRENT_GRAPH[i].id == n.interf[j]) {
+                    for(k = 0; k < CURRENT_GRAPH[i].interf.size(); k++) {
+                        if(CURRENT_GRAPH[i].interf[k] == n.id) {
+                            CURRENT_GRAPH[i].interf.erase(CURRENT_GRAPH[i].interf.begin() + k);
+                            break;
+                        }   
+                    }
+                }
+            }
+        }
+        l++;
     }   
 }
 
@@ -171,7 +191,7 @@ bool simplify() {
     }
         
     if(ret != -1){
-        cout << "Push: " << CURRENT_GRAPH[ret].id << "\n";
+        std::cout << "Push: " << CURRENT_GRAPH[ret].id << "\n";
         push(ret);
         return true;
     }else{
@@ -196,7 +216,7 @@ void potentialSpill() {
         }
     }
         
-    cout << "Push: " << CURRENT_GRAPH[ret].id << " *\n";
+    std::cout << "Push: " << CURRENT_GRAPH[ret].id << " *\n";
     push(ret);
 }
 
@@ -222,21 +242,21 @@ bool assign() {
     for(i = 0; i < CURRENT_K; i++) {
         if(colors[i] == 0){
             n.color = i;
-            cout << "Pop: " << n.id << " -> " << n.color << "\n";
+            std::cout << "Pop: " << n.id << " -> " << n.color << "\n";
             CURRENT_GRAPH.push_back(n);
             return true;
         }
     }
-    cout << "Pop: " << n.id << " -> NO COLOR AVAILABLE\n";
+    std::cout << "Pop: " << n.id << " -> NO COLOR AVAILABLE\n";
     CURRENT_GRAPH.push_back(n);
     return false;
 }
 
 void gambiarra(int n) {
-    string s1 = std::to_string(n), s2 = std::to_string(K);
+    std::string s1 = to_string(n), s2 = to_string(K);
     int i = s1.length(), j = s2.length();
     for(i; i < j; i++) {
-        cout << " ";
+        std::cout << " ";
     }
 }
 
@@ -244,15 +264,15 @@ int main() {
     treatInput();
     int r[K] = {0};
     
-    cout << "Graph " << G_NAME << " -> Physical Registers: " << K << "\n";
-    cout << "----------------------------------------\n";
-    cout << "----------------------------------------\n";
+    std::cout << "Graph " << G_NAME << " -> Physical Registers: " << K << "\n";
+    std::cout << "----------------------------------------\n";
+    std::cout << "----------------------------------------\n";
 
     CURRENT_K = K;
     while(CURRENT_K >= 2) {
         copyGraph();
         bool flag = true;
-        cout << "K = " << CURRENT_K << "\n\n";
+        std::cout << "K = " << CURRENT_K << "\n\n";
         while(CURRENT_GRAPH.size() > 0) {
             flag = simplify();
             if(!flag) {
@@ -267,23 +287,23 @@ int main() {
                 break;
             }
         }
-        cout << "----------------------------------------\n";
+        std::cout << "----------------------------------------\n";
         CURRENT_K--;
     }
-    cout << "----------------------------------------";
+    std::cout << "----------------------------------------";
     int i;
     for(i = K-1; i > 0; i--) {
         if(i > 0) {
-            cout << "\n";
+            std::cout << "\n";
         }
-        cout << "Graph " << G_NAME << " -> K = ";
+        std::cout << "Graph " << G_NAME << " -> K = ";
         gambiarra(i+1);
-        cout << i+1 << ": ";
+        std::cout << i+1 << ": ";
         
         if(r[i] != 0) {
-            cout << "SPILL";
+            std::cout << "SPILL";
         } else {
-            cout << "Successful Allocation";
+            std::cout << "Successful Allocation";
         }
     }
 }
